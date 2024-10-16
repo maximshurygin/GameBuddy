@@ -1,0 +1,37 @@
+{% extends 'games/base.html' %}
+{% load static %}
+
+{% block title %}Доступные игры{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4 text-center text-dark">Доступные игры</h1>
+            <p class="lead text-center text-muted">Выберите игру и найдите идеального напарника</p>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for game in games %}
+        <div class="col">
+            <div class="card h-100 shadow hover-card">
+                <img src="{{ game.icon.url }}" class="card-img-top img-fluid p-3" alt="{{ game.name }}">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-3">{{ game.title }}</h5>
+                    <a href="{{ game.get_absolute_url }}" class="btn btn-dark mt-auto stretched-link">
+                        <i class="bi bi-controller me-2"></i>Найти игроков
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center" role="alert">
+                <i class="bi bi-info-circle-fill me-2"></i>На данный момент нет доступных игр.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

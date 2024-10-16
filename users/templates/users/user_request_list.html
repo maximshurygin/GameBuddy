@@ -1,0 +1,28 @@
+{% extends 'games/base.html' %}
+{% block title %}Заявки{% endblock %}
+
+{% block content %}
+
+    <div class="container mt-5">
+
+        <h1 style="text-align: center; margin-bottom: 20px;">Мои заявки</h1>
+
+        {% if user_requests %}
+            <div class="list-group">
+                {% for request in user_requests %}
+                    <a href="{% url 'games:buddy_request_detail' request.game.slug request.id %}"
+                       class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ request.game.title }}</h5>
+                            <small>{{ request.created_at|date:"d.m.Y H:i" }}</small>
+                        </div>
+                        <p class="mb-1">{{ request.description|truncatechars:100 }}</p>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">У вас пока нет заявок.</p>
+        {% endif %}
+    </div>
+
+{% endblock %}

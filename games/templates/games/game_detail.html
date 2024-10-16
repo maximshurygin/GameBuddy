@@ -1,0 +1,80 @@
+{% extends 'games/base.html' %}
+{% load static %}
+
+{% block title %}Доступные игры{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Заголовок и кнопка создания -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-4 text-dark">{{ game.title }}</h1>
+            <p class="lead text-muted">Найдите идеального напарника для игры</p>
+        </div>
+        <div class="col-md-4 d-flex align-items-center justify-content-md-end">
+            <a href="{% url 'games:buddy_request_create' game.slug %}" class="btn btn-dark btn-lg">
+                <i class="bi bi-plus-circle me-2"></i>Создать заявку
+            </a>
+        </div>
+    </div>
+
+    {% if buddy_requests %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for request in buddy_requests %}
+        <div class="col">
+            <div class="card h-100 shadow hover-card">
+                <a href="{% url 'games:buddy_request_detail' slug=request.game.slug pk=request.pk %}"
+                   class="text-decoration-none text-reset">
+                    <div class="card-body">
+                        <!-- Информация о пользователе -->
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="user-avatar me-3">
+                                <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                     style="width: 40px; height: 40px;">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 text-primary">{{ request.user.nickname }}</h6>
+                                <small class="text-muted">{{ request.created_at|date:"d.m.Y" }}</small>
+                            </div>
+                        </div>
+
+                        <!-- Описание -->
+                        <div class="description-container mb-3">
+                            <p class="card-text text-dark">{{ request.description|truncatechars:100 }}</p>
+                        </div>
+
+                        <!-- Бейджи -->
+                        <div class="badges-container">
+                            <span class="badge bg-primary mb-2 me-2">
+                                <i class="bi bi-trophy me-1"></i>{{ request.get_goal_display }}
+                            </span>
+                            {% if request.min_age or request.max_age %}
+                            <span class="badge bg-info mb-2">
+                                <i class="bi bi-person me-1"></i>
+                                {% if request.min_age and request.max_age %}
+                                    {{ request.min_age }}-{{ request.max_age }} лет
+                                {% elif request.min_age %}
+                                    от {{ request.min_age }} лет
+                                {% elif request.max_age %}
+                                    до {{ request.max_age }} лет
+                                {% endif %}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center p-5" role="alert">
+        <i class="bi bi-info-circle display-1 mb-3"></i>
+        <h4 class="alert-heading">Пока нет заявок</h4>
+        <p class="mb-0">Станьте первым, кто создаст заявку на поиск напарника!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

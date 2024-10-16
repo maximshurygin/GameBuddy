@@ -1,0 +1,137 @@
+{% extends 'games/base.html' %}
+{% load crispy_forms_filters %}
+{% block title %}Чат{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div id="chat-container" class="card">
+                    <div class="card-header bg-dark text-white py-2">
+                        <h4>Чат с
+                            {% if other_user %}
+                                <a href="{% url 'users:user_profile' pk=other_user.pk %}"
+                                   class="text-white text-decoration-underline">
+                                    {{ other_user.nickname }}
+                                </a>
+                            {% else %}
+                                удаленным пользователем
+                            {% endif %}
+                        </h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="chat-messages" class="p-3"
+                             style="height: 600px; overflow-y: auto; display: flex; flex-direction: column-reverse;">
+                            <!-- Сообщения будут загружаться сюда -->
+                        </div>
+                        <div class="p-3 bg-light">
+                            <form method="post" id="message-form">
+                                {% csrf_token %}
+                                {{ form|crispy }}
+                                <button type="submit" class="btn btn-primary ms-2 rounded-pill">Отправить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let currentPage = 1;
+    let isLoading = false;
+    let hasMoreMessages = true;
+    let lastMessageTimestamp = null;
+
+    function loadMessages(page = 1, prepend = false) {
+        if (isLoading) return;
+        isLoading = true;
+
+        $.getJSON("{% url 'chat:get_messages' chat.id %}?page=" + page, function (data) {
+            var chatDiv = $("#chat-messages");
+            var messagesHtml = '';
+            var newMessages = false;
+
+            $.each(data.messages, function (index, message) {
+                if (lastMessageTimestamp === null || moment(message.timestamp).isAfter(lastMessageTimestamp)) {
+                    var alignClass = message.sender === '{{ user.nickname }}' ? 'text-end' : 'text-start';
+                    var timestamp = moment(message.timestamp).format('DD.MM.YYYY HH:mm');
+                    messagesHtml += '<div class="message ' + alignClass + '">' +
+                        '<strong>' + (message.sender || "Удаленный пользователь") + ':</strong> ' +
+                        message.content +
+                        '<br><small class="text-muted">' + timestamp + '</small>' +
+                        '</div>';
+                    newMessages = true;
+                }
+            });
+
+            if (newMessages) {
+                if (prepend) {
+                    chatDiv.append(messagesHtml);
+                } else {
+                    chatDiv.prepend(messagesHtml);
+                    chatDiv.scrollTop(0);
+                }
+                lastMessageTimestamp = moment(data.messages[0].timestamp);
+            }
+
+            if (data.has_next) {
+                currentPage = data.page_number + 1;
+            } else {
+                hasMoreMessages = false;
+            }
+
+            isLoading = false;
+        });
+    }
+
+        $(document).ready(function () {
+            loadMessages();
+
+            $('#message-form textarea[name="content"]').keydown(function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    $("#message-form").submit();
+                }
+            });
+
+            $("#message-form").submit(function (e) {
+                e.preventDefault();
+                var form = $(this);
+                var submitButton = form.find('button[type="submit"]');
+                submitButton.prop('disabled', true);
+
+                $.ajax({
+                    type: 'POST',
+                    url: "{% url 'chat:chat_detail' pk=chat.id %}",
+                    data: form.serialize(),
+                    success: function (response) {
+                        form.trigger('reset');
+                        loadMessages();
+                        submitButton.prop('disabled', false);
+                    },
+                    error: function () {
+                        submitButton.prop('disabled', false);
+                    }
+                });
+            });
+
+            setInterval(function () {
+                loadMessages();
+            }, 5000);
+
+            $('#chat-messages').on('scroll', function () {
+                if ($(this).scrollTop() + $(this).innerHeight() >= this.scrollHeight - 20 && hasMoreMessages && !isLoading) {
+                    loadMessages(currentPage, true);
+                }
+            });
+
+            $('textarea').on('input', function () {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+        });
+    </script>
+{% endblock %}

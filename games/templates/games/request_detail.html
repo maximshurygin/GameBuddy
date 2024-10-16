@@ -1,0 +1,125 @@
+{% extends 'games/base.html' %}
+{% load static %}
+
+{% block title %}Информация о заявке{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="card shadow">
+                    <div class="card-header bg-dark text-white py-3">
+                        <h2 class="card-title mb-0 text-center">
+                            <a href="{% url 'games:game_detail' slug=request.game.slug %}"
+                               class="text-white text-decoration-underline">
+                                {{ request.game.title }}
+                            </a>
+                        </h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Верхняя секция с информацией о пользователе и кнопками -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <h5 class="mb-0"><a href="{% url 'users:user_profile' pk=request.user.pk %}"
+                                                        class="text-decoration-none">{{ request.user.nickname }}</a>
+                                    </h5>
+                                    <small class="text-muted">{{ request.created_at|date:"d.m.Y" }}</small>
+                                </div>
+                            </div>
+                            {% if user == request.user %}
+                                <div class="button-group">
+                                    <a href="{% url 'games:buddy_request_update' slug=request.game.slug pk=request.pk %}"
+                                       class="btn btn-outline-primary me-2">
+                                        <i class="bi bi-pencil-square"></i> Изменить
+                                    </a>
+                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                                            data-bs-target="#deleteConfirmationModal">
+                                        <i class="bi bi-trash"></i> Удалить
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Основная информация -->
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="info-card bg-light p-3 rounded">
+                                    <h5 class="card-subtitle mb-3 text-dark"><i class="bi bi-info-circle me-2"></i>Основная
+                                        информация</h5>
+                                    <p class="mb-2"><strong>Цель:</strong> <span
+                                            class="badge bg-info">{{ request.get_goal_display }}</span></p>
+                                    {% if request.voice %}
+                                        <p class="mb-2"><strong>Голосовые чаты:</strong>
+                                            {% for chat in request.voice %}
+                                                <span class="badge bg-secondary me-1">{{ chat }}</span>
+                                            {% endfor %}
+                                        </p>
+                                    {% endif %}
+                                    {% if request.min_age or request.max_age %}
+                                        <p class="mb-0"><strong>Возраст:</strong>
+                                            {% if request.min_age and request.max_age %}
+                                                <span class="badge bg-success">{{ request.min_age }} - {{ request.max_age }} лет</span>
+                                            {% elif request.min_age %}
+                                                <span class="badge bg-success">от {{ request.min_age }} лет</span>
+                                            {% elif request.max_age %}
+                                                <span class="badge bg-success">до {{ request.max_age }} лет</span>
+                                            {% endif %}
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if current_user.id != request.user.id %}
+                                <div class="col-md-6">
+                                    <div class="contact-card bg-light p-3 rounded">
+                                        <h5 class="card-subtitle mb-3 text-dark"><i class="bi bi-chat-dots me-2"></i>Контакты
+                                        </h5>
+                                        <a href="{% url 'chat:start_chat' request.user.id %}"
+                                           class="btn btn-primary btn-lg">
+                                            <i class="bi bi-envelope me-2"></i>Написать сообщение
+                                        </a>
+
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Описание -->
+                        <div class="mt-4">
+                            <h5 class="card-subtitle mb-3 text-dark"><i class="bi bi-file-text me-2"></i>Описание заявки
+                            </h5>
+                            <div class="bg-light p-3 rounded">
+                                {{ request.description }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для подтверждения удаления -->
+    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel">Подтверждение удаления</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">Вы уверены, что хотите удалить эту заявку? Это действие нельзя будет отменить.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <form method="post"
+                          action="{% url 'games:buddy_request_delete' slug=request.game.slug pk=request.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

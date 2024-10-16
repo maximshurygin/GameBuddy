@@ -1,0 +1,92 @@
+{% extends 'games/base.html' %}
+{% load static %}
+
+{% block title %}Профиль {{ user.nickname }}{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="card shadow">
+                    <div class="card-header bg-dark text-white py-3">
+                        <h2 class="card-title mb-0 text-center">Профиль пользователя</h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Верхняя секция с информацией о пользователе -->
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="user-avatar me-3">
+                                <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                     style="width: 80px; height: 80px;">
+                                    <i class="bi bi-person-fill" style="font-size: 2.5rem;"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="mb-0">{{ user.nickname }}</h3>
+                                <p class="text-muted mb-0">На сайте с {{ user.date_joined|date:"d.m.Y" }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Основная информация -->
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="info-card bg-light p-3 rounded">
+                                    <h5 class="card-subtitle mb-3 text-dark"><i class="bi bi-info-circle me-2"></i>Основная
+                                        информация</h5>
+                                    {% if user.gender %}
+                                        <p class="mb-2"><strong>Пол:</strong> {{ user.get_gender_display }}</p>
+                                    {% endif %}
+                                    {% if user.age %}
+                                        <p class="mb-2"><strong>Возраст:</strong> {{ user.age }} лет</p>
+                                    {% endif %}
+                                    {% if user.country %}
+                                        <p class="mb-0"><strong>Страна:</strong> {{ user.country.name }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="stats-card bg-light p-3 rounded">
+                                    <h5 class="card-subtitle mb-3 text-dark"><i class="bi bi-graph-up me-2"></i>Статистика
+                                    </h5>
+                                    <p class="mb-0"><strong>Всего заявок:</strong> <span
+                                            class="badge bg-info">{{ total_requests }}</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Последние активные заявки -->
+                        <div class="mt-4">
+                            <h5 class="card-subtitle mb-3 text-dark"><i class="bi bi-list-task me-2"></i>Последние
+                                заявки</h5>
+                            {% if recent_requests %}
+                                <div class="list-group">
+                                    {% for request in recent_requests %}
+                                        <a href="{% url 'games:buddy_request_detail' slug=request.game.slug pk=request.pk %}"
+                                           class="list-group-item list-group-item-action">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">{{ request.game.title }}</h6>
+                                                <small class="text-muted">{{ request.created_at|timesince }}
+                                                    назад</small>
+                                            </div>
+                                            <p class="mb-1">{{ request.description|truncatechars:100 }}</p>
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-muted">У пользователя пока нет заявок.</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Кнопка отправки сообщения -->
+                        {% if user.id != current_user.id %}
+                            <div class="mt-4 text-center">
+                                <a href="{% url 'chat:start_chat' user.id %}" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-envelope me-2"></i>Написать сообщение
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,229 @@
+/* Закругленные углы для карточек */
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+    border: none;
+}
+
+/* Эффект наведения для информационных карточек */
+.info-card, .contact-card {
+    transition: transform 0.2s;
+}
+
+.info-card:hover, .contact-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Более округлые бейджи */
+.badge {
+    border-radius: 30px;
+    padding: 0.5em 1em;
+}
+
+/* Тень для аватара */
+.user-avatar .rounded-circle {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Анимация для кнопок */
+.btn-outline-primary, .btn-outline-danger {
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover, .btn-outline-danger:hover {
+    transform: translateY(-2px);
+}
+
+
+/* Стили для карточек в списке */
+.card-hover {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.description-container {
+    min-height: 80px;
+    max-height: 80px;
+    overflow: hidden;
+}
+
+/* Стили для заголовка */
+.display-4 {
+    font-weight: 600;
+}
+
+.lead {
+    font-size: 1.1rem;
+}
+
+/* Улучшенные стили для кнопки создания */
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+}
+
+/* Стили для пустого состояния */
+.alert-info {
+    background-color: #f8f9fa;
+    border: 2px dashed #dee2e6;
+}
+
+.alert-info .bi {
+    color: #17a2b8;
+}
+
+
+.hover-card {
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, .125);
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    border-color: #007bff;
+}
+
+.hover-card .card-body {
+    transition: all 0.3s ease;
+}
+
+.hover-card:hover .card-body {
+    background-color: #f8f9fa;
+}
+
+.hover-card:hover .text-primary {
+    color: #0056b3 !important;
+}
+
+.hover-card .badge {
+    transition: all 0.3s ease;
+}
+
+.hover-card:hover .badge.bg-primary {
+    background-color: #0056b3 !important;
+}
+
+.hover-card:hover .badge.bg-info {
+    background-color: #17a2b8 !important;
+}
+
+
+/* Добавьте эти стили в ваш custom.css */
+
+.info-card, .stats-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.info-card:hover, .stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.user-avatar .rounded-circle {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.list-group-item {
+    transition: background-color 0.2s;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.btn-lg {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-lg:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Обновленные стили в вашем custom.css */
+
+.hover-card {
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, .125);
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    border-color: #000; /* Изменено на черный цвет */
+}
+
+.card-img-top {
+    transition: transform 0.3s ease;
+}
+
+.hover-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.btn-primary {
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.display-4 {
+    font-weight: 600;
+}
+
+.lead {
+    font-size: 1.1rem;
+}
+
+
+#chat-container {
+    border: 1px solid black !important;
+    border-radius: 0.50rem;
+}
+
+#chat-messages .message {
+    max-width: 80%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 15px;
+    word-wrap: break-word;
+}
+
+#chat-messages .message.text-end {
+    margin-left: auto;
+    background-color: #DCF8C6;
+}
+
+#chat-messages .message.text-start {
+    margin-right: auto;
+    background-color: #E6E6E6;
+}
+
+#chat-messages .message small {
+    display: block;
+    margin-top: 5px;
+}
+
+.input-group textarea {
+    resize: none;
+    overflow: hidden;
+    height: auto;
+}
+
+.input-group .btn {
+    height: 100%;
+    align-self: stretch;
+}
+
+.btn-primary.rounded-pill {
+    padding-left: 20px;
+    padding-right: 20px;
+}

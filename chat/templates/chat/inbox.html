@@ -1,0 +1,50 @@
+{% extends 'games/base.html' %}
+{% load static %}
+{% block title %}Личные сообщения{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 style="text-align: center; margin-bottom: 20px;">Мои чаты</h1>
+        {% if chats %}
+            <div class="list-group">
+                {% for chat in chats %}
+                    <a href="{% url 'chat:chat_detail' pk=chat.id %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            {% if chat.other_participant %}
+                                <h5 class="mb-1">{{ chat.other_participant.nickname }}</h5>
+                            {% else %}
+                                <h5 class="mb-1">Удаленный пользователь</h5>
+                            {% endif %}
+                            <small class="chat-timestamp" data-timestamp="{{ chat.last_message.timestamp|date:'c' }}">
+                                {{ chat.last_message.timestamp|date:"d.m.Y H:i" }}
+                            </small>
+                        </div>
+                        {% if chat.last_message %}
+                            <p class="mb-1">{{ chat.last_message.content|truncatechars:50 }}</p>
+                            {% if chat.last_message.sender != request.user and not chat.last_message.is_read %}
+                                <span class="badge bg-primary">Новое</span>
+                            {% endif %}
+                        {% else %}
+                            <p class="mb-1">Нет сообщений</p>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">У вас пока нет активных чатов.</p>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const timestamps = document.querySelectorAll('.chat-timestamp');
+            timestamps.forEach(function (element) {
+                const timestamp = element.getAttribute('data-timestamp');
+                const localTime = moment(timestamp).format('DD.MM.YYYY HH:mm');
+                element.textContent = localTime;
+            });
+        });
+    </script>
+{% endblock %}

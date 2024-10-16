@@ -1,0 +1,30 @@
+{% extends 'games/base.html' %}
+
+{% load static %}
+
+{% block title %}Удаление заявки{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+    <h1 class="mb-4 text-center">Удаление заявки #{{ buddyrequest.id }}</h1>
+
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Подтверждение удаления</h5>
+                    <p class="card-text">Вы уверены, что хотите удалить заявку #{{ buddyrequest.id }}?</p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Подтвердить удаление</button>
+                        <a href="{% url 'buddyrequest:list' %}" class="btn btn-secondary">Отмена</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

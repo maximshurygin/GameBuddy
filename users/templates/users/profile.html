@@ -1,0 +1,34 @@
+{% extends 'games/base.html' %}
+{% load crispy_forms_filters %}
+{% load static %}
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+
+        <h1 style="text-align: center; margin-bottom: 20px;">{{ title }}</h1>
+
+        <form method="post" class="mx-auto p-4 border rounded shadow" style="max-width: 600px;">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary w-100">Сохранить</button>
+            <hr>
+
+            <!-- Ссылка для изменения пароля -->
+            <p><a href="{% url 'users:password_change' %}"
+                  style="display: block; text-align: center; margin-bottom: 20px;">Изменить пароль</a></p>
+        </form>
+
+        <hr>
+
+        <!-- Форма для выхода из аккаунта -->
+        <form method="post" action="{% url 'users:logout' %}" style="max-width: 100px; margin: 0 auto;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger"
+                    style="width: 100%; padding: 10px; font-size: 16px;">
+                Выход
+            </button>
+        </form>
+
+    </div>
+{% endblock %}
